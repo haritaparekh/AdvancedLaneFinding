@@ -50,7 +50,7 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 #### 1. Provide an example of a distortion-corrected image.
 By using cv2.calibrateCamera(),we get the camera calibration -mtx and distortion coefficients dist.The mtx and dist are applied to the image to remove distortion.
 ##### Undistorted Test Image3
-![alt text](output_images/undistorted.png)
+![alt text](output_images/Undistorted.png)
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 I played around with various gradient transformation methods like Sobel operator, applying threshold to Magnitude and Direction of the gradient to extract Lane lines.The Sobel x operator worked best because it takes derivative in the x direction which helps extracting lines vertical in nature. By then applying thresholding to the Sobel applied image we can selective pick pixels that fall between particular threshold range.The threshold range selected was 35,100 after a lot of experiments.I first tried applying sobel to Grayscale image but conversion to grayscale caused a lot of information loss.Since the images had varying light conditions,using grayscale would not help.The color of the lane lines is the only feature that helps in Lane detection. So to gain maximum color information I used HSL colorspace.I applied Sobel x operator to l-channel.The next step was to apply thresholding to the V-channel to extract the white and yellow lines and remove most of the other noise.I used the threshold values 220-255.I then applied thresholding to extract the yellow lines by thresholding the hue channel.I could see the effect of each of the thresholding applied using the numpy.dstack API.This helped me tune my values.(Cell 9)
@@ -86,10 +86,10 @@ The process to identify lane line pixels and fit their positions in a polynomial
 The color,gradient thresholded and warped image is passed to the find_lane_pixels(cell 13) function.Histogram of the botton half of the image is applied.This gives two peaks which are nothing but the left and right lane lines consisting of higher intensity white pixels.We calculate the left and right starting point for each peaks.
 
 The next step is to create windows to slide over the peaks.We try to find white pixels inside the window and also recenter the window as we slide up by taking mean of the pixels found inside the window.The non zero x and y pixels for right and left peaks are appended to their respective lists.The next step is to extract x and y values from the right and left lists. To fit the positions of the extracted lane pixels we use np.polyfit.This gives us second order polynomial for left and right lane.
-This step is required for the first frame.For the next subsequent frames,we simply search in a margin along  the left and right polynomial calculated from the previous step.This is implemented in function search_along_poly (Cell 14)The idea is that the lane lines do not fluctuate drastically between consequent frames. So we do not need to calculate everything from start.
+This step is required for the first frame.For the next subsequent frames,we simply search in a margin along  the left and right polynomial calculated from the previous step.This is implemented in function search_along_poly (Cell 14)The idea is that the lane lines do not fluctuate drastically between consequent frames. S we do not need to calculate everything from start.
 
 ##### Sliding Window Output
-![alt text](output_images/sliding_window.png)
+![alt text](output_images/Sliding_window.png)
 
 ##### Search along Previous Polynomial
 ![alt text](output_images/search_along_poly.png)
@@ -115,7 +115,7 @@ I implemented this step in Cell 17  in the function `draw_lanes()`. Till now we 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
 ###### Pipleline Output Video
-Here's a [link to my video result](output_vidoes/project_video.mp4)
+Here's a [link to my video result](output_videos/project_video.mp4)
 
 ---
 
