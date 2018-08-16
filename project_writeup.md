@@ -42,7 +42,7 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.The transformation from 3D -2D causes distortion.Inorder to correct this distortion we need the camera calibration and distortion coefficients .I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 ##### Undistorted Calibration Image
-![alt text][output_images/undistorted_calib.png]
+![alt text](output_images/undistorted_calib.png)
 
 
 ### Pipeline (single images)
@@ -50,13 +50,13 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 #### 1. Provide an example of a distortion-corrected image.
 By using cv2.calibrateCamera(),we get the camera calibration -mtx and distortion coefficients dist.The mtx and dist are applied to the image to remove distortion.
 ##### Undistorted Test Image3
-![alt text][output_images/undistorted.png]
+![alt text](output_images/undistorted.png)
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 I played around with various gradient transformation methods like Sobel operator, applying threshold to Magnitude and Direction of the gradient to extract Lane lines.The Sobel x operator worked best because it takes derivative in the x direction which helps extracting lines vertical in nature. By then applying thresholding to the Sobel applied image we can selective pick pixels that fall between particular threshold range.The threshold range selected was 35,100 after a lot of experiments.I first tried applying sobel to Grayscale image but conversion to grayscale caused a lot of information loss.Since the images had varying light conditions,using grayscale would not help.The color of the lane lines is the only feature that helps in Lane detection. So to gain maximum color information I used HSL colorspace.I applied Sobel x operator to l-channel.The next step was to apply thresholding to the V-channel to extract the white and yellow lines and remove most of the other noise.I used the threshold values 220-255.I then applied thresholding to extract the yellow lines by thresholding the hue channel.I could see the effect of each of the thresholding applied using the numpy.dstack API.This helped me tune my values.(Cell 9)
 
 ##### Color and Gradient Tranformed Test Image3
-![alt text][output_images/color_gradient.png]
+![alt text](output_images/color_gradient.png)
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
@@ -79,7 +79,7 @@ This resulted in the following source and destination points:
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
 ##### Warped Test Image3
-![alt text][output_images/warped_image.png]
+![alt text](output_images/warped_image.png)
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 The process to identify lane line pixels and fit their positions in a polynomial are as follows:
@@ -89,10 +89,10 @@ The next step is to create windows to slide over the peaks.We try to find white 
 This step is required for the first frame.For the next subsequent frames,we simply search in a margin along  the left and right polynomial calculated from the previous step.This is implemented in function search_along_poly (Cell 14)The idea is that the lane lines do not fluctuate drastically between consequent frames. So we do not need to calculate everything from start.
 
 ##### Sliding Window Output
-![alt text][output_images/sliding_window.png]
+![alt text](output_images/sliding_window.png)
 
 ##### Search along Previous Polynomial
-![alt text][output_images/search_along_poly.png]
+![alt text](output_images/search_along_poly.png)
 
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
@@ -106,7 +106,7 @@ I calculated the  position of the vehicle with respect to center in Cell 16,meas
 I implemented this step in Cell 17  in the function `draw_lanes()`. Till now we did all the ananlysis and visualization on a warped image.The draw_lanes function helps us visualize the lane lines on actual undistorted image.This function takes undistorted image,left and right polynomials and the Inverse Perspective Transformation matrix.This is required to unwarp the lane lines image on the undistorted image.A weighted addition of the images gives the following output
 
 ##### Pipeline Output
-![alt text][output_images/final_output.png]
+![alt text](output_images/final_output.png)
 
 ---
 
